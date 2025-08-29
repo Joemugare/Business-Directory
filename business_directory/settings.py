@@ -4,12 +4,17 @@ from decouple import config
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Load environment variables
+SECRET_KEY = config('DJANGO_SECRET_KEY')
+DEBUG = config('DEBUG', default=False, cast=bool)
+
 # Security settings
 ALLOWED_HOSTS = config(
     'ALLOWED_HOSTS',
-    default='localhost,127.0.0.1,businessdirectory.cloud'
-).split(',')
-
+    default='localhost,127.0.0.1,businessdirectory.cloud,business-directory-od0p.onrender.com'
+).split(',')  # Ensure hosts are split correctly
+# Strip whitespace from each host to avoid issues
+ALLOWED_HOSTS = [host.strip() for host in ALLOWED_HOSTS]
 
 # Application definition
 INSTALLED_APPS = [
@@ -35,8 +40,6 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    
-
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -54,8 +57,7 @@ TEMPLATES = [
         'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
-            'context_processors':
-           [
+            'context_processors': [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
@@ -68,7 +70,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'business_directory.wsgi.application'
 
-# Database (SQLite for development)
+# Database (SQLite for development, consider PostgreSQL for Render)
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -110,23 +112,14 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Custom User Model (if you plan to extend User model later)
-# AUTH_USER_MODEL = 'accounts.CustomUser'  # Uncomment when you create custom user model
-
 # Login/Logout URLs
 LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = 'home'
 
 # Email settings (for development - console backend)
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 DEFAULT_FROM_EMAIL = 'noreply@localbiz.com'
-
-
-
-    
-  
-    
 
 # Django REST Framework settings
 REST_FRAMEWORK = {
@@ -245,5 +238,3 @@ TIME_ZONE_CHOICES = [
     ('US/Pacific', 'Pacific Time'),
     ('UTC', 'UTC'),
 ]
-
-LOGOUT_REDIRECT_URL = 'home'
