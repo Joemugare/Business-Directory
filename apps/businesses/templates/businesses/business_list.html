@@ -1,0 +1,897 @@
+﻿{% extends 'base.html' %}
+
+{% block title %}Business Listings - LocalBiz{% endblock %}
+
+{% block meta_description %}Browse local businesses including restaurants, shops, and services in your area.{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Business Listings Page Styles */
+    .listings-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 4rem 0 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .listings-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="dots" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="1" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23dots)"/></svg>');
+        pointer-events: none;
+    }
+    
+    .listings-content {
+        position: relative;
+        z-index: 2;
+    }
+    
+    /* Enhanced Search & Filter Section */
+    .search-filter-section {
+        background: white;
+        border-radius: 1.5rem;
+        padding: 2.5rem;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        margin-top: -3rem;
+        position: relative;
+        z-index: 3;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255,255,255,0.2);
+    }
+    
+    .form-control-modern {
+        border: 2px solid #e2e8f0;
+        border-radius: 0.75rem;
+        padding: 1rem 1.25rem;
+        font-size: 1rem;
+        font-weight: 500;
+        background: white;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    
+    .form-control-modern:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.15), 0 4px 20px rgba(0,0,0,0.1);
+        transform: translateY(-1px);
+    }
+    
+    .form-control-modern::placeholder {
+        color: #94a3b8;
+        font-weight: 400;
+    }
+    
+    .btn-search {
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+        border: none;
+        border-radius: 0.75rem;
+        padding: 1rem 2rem;
+        font-weight: 600;
+        color: white;
+        box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .btn-search:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+        background: linear-gradient(135deg, var(--primary-hover), var(--primary-color));
+        color: white;
+    }
+    
+    .btn-search:active {
+        transform: translateY(0);
+    }
+    
+    /* Results Header */
+    .results-header {
+        background: rgba(99, 102, 241, 0.05);
+        border-radius: 1rem;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        border: 1px solid rgba(99, 102, 241, 0.1);
+    }
+    
+    .results-count {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--primary-color);
+        margin: 0;
+    }
+    
+    .results-info {
+        color: #64748b;
+        font-size: 0.95rem;
+        margin: 0.5rem 0 0 0;
+    }
+    
+    /* Enhanced Business Cards */
+    .business-card-modern {
+        background: white;
+        border-radius: 1.5rem;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        height: 100%;
+        border: 1px solid #f1f5f9;
+        position: relative;
+    }
+    
+    .business-card-modern::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+        transform: scaleX(0);
+        transition: transform 0.3s ease;
+    }
+    
+    .business-card-modern:hover {
+        transform: translateY(-8px) scale(1.02);
+        box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+        border-color: var(--primary-color);
+    }
+    
+    .business-card-modern:hover::before {
+        transform: scaleX(1);
+    }
+    
+    .business-image-modern {
+        height: 220px;
+        background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .business-image-modern img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.4s ease;
+    }
+    
+    .business-card-modern:hover .business-image-modern img {
+        transform: scale(1.05);
+    }
+    
+    .business-image-placeholder {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        background: linear-gradient(135deg, #e2e8f0, #cbd5e1);
+    }
+    
+    .business-image-placeholder i {
+        font-size: 3rem;
+        color: #94a3b8;
+        opacity: 0.7;
+    }
+    
+    .business-content-modern {
+        padding: 2rem;
+    }
+    
+    .business-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1rem;
+    }
+    
+    .business-title-modern {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin: 0;
+        line-height: 1.3;
+        flex: 1;
+    }
+    
+    .verified-badge {
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: white;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.5rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        margin-left: 1rem;
+        flex-shrink: 0;
+    }
+    
+    .business-location-modern {
+        color: #64748b;
+        font-size: 0.95rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+        font-weight: 500;
+    }
+    
+    .business-rating-modern {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1.25rem;
+    }
+    
+    .stars-modern {
+        color: #fbbf24;
+        font-size: 1.1rem;
+    }
+    
+    .rating-text-modern {
+        color: #64748b;
+        font-weight: 500;
+        font-size: 0.95rem;
+    }
+    
+    .business-description-modern {
+        color: #475569;
+        font-size: 1rem;
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+    }
+    
+    .business-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+    }
+    
+    .btn-view-details {
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+        color: white;
+        border: none;
+        border-radius: 0.75rem;
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .btn-view-details:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        color: white;
+        text-decoration: none;
+    }
+    
+    .category-badge {
+        background: rgba(99, 102, 241, 0.1);
+        color: var(--primary-color);
+        padding: 0.5rem 1rem;
+        border-radius: 2rem;
+        font-size: 0.85rem;
+        font-weight: 600;
+        border: 1px solid rgba(99, 102, 241, 0.2);
+    }
+    
+    /* Enhanced Pagination */
+    .pagination-modern {
+        justify-content: center;
+        gap: 0.5rem;
+        margin-top: 3rem;
+    }
+    
+    .pagination-modern .page-item {
+        margin: 0;
+    }
+    
+    .pagination-modern .page-link {
+        border: 2px solid #e2e8f0;
+        border-radius: 0.75rem;
+        padding: 0.75rem 1rem;
+        color: #64748b;
+        font-weight: 600;
+        background: white;
+        transition: all 0.3s ease;
+        min-width: 50px;
+        text-align: center;
+    }
+    
+    .pagination-modern .page-link:hover {
+        border-color: var(--primary-color);
+        color: var(--primary-color);
+        background: rgba(99, 102, 241, 0.05);
+        transform: translateY(-1px);
+        text-decoration: none;
+    }
+    
+    .pagination-modern .page-item.active .page-link {
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+        border-color: var(--primary-color);
+        color: white;
+        box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+    }
+    
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: white;
+        border-radius: 1.5rem;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    }
+    
+    .empty-state-icon {
+        font-size: 4rem;
+        color: #cbd5e1;
+        margin-bottom: 1.5rem;
+    }
+    
+    .empty-state h3 {
+        color: #475569;
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+    
+    .empty-state p {
+        color: #64748b;
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+        max-width: 400px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    /* Filter Tags */
+    .active-filters {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .filter-tag {
+        background: rgba(99, 102, 241, 0.1);
+        color: var(--primary-color);
+        padding: 0.5rem 1rem;
+        border-radius: 2rem;
+        font-size: 0.9rem;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        border: 1px solid rgba(99, 102, 241, 0.2);
+    }
+    
+    .filter-tag .remove-filter {
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.75rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-decoration: none;
+    }
+    
+    .filter-tag .remove-filter:hover {
+        background: var(--primary-hover);
+        transform: scale(1.1);
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .listings-header {
+            padding: 3rem 0 1.5rem;
+        }
+        
+        .search-filter-section {
+            margin-top: -2rem;
+            padding: 2rem 1.5rem;
+        }
+        
+        .business-card-modern:hover {
+            transform: translateY(-4px) scale(1.01);
+        }
+        
+        .business-footer {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        
+        .btn-view-details {
+            text-align: center;
+            justify-content: center;
+        }
+        
+        .category-badge {
+            text-align: center;
+        }
+    }
+    
+    /* Loading states */
+    .loading-skeleton {
+        background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+        background-size: 200% 100%;
+        animation: loading 1.5s infinite;
+    }
+    
+    @keyframes loading {
+        0% { background-position: 200% 0; }
+        100% { background-position: -200% 0; }
+    }
+    
+    /* Micro animations */
+    .business-card-modern,
+    .btn-search,
+    .btn-view-details,
+    .pagination-modern .page-link {
+        will-change: transform;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Header Section -->
+<section class="listings-header">
+    <div class="container listings-content">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h1 class="fw-bold mb-3" style="font-size: clamp(2rem, 5vw, 3rem);">Business Listings</h1>
+                <p class="lead mb-0" style="font-size: 1.2rem; opacity: 0.9;">
+                    Find the best local businesses in your area
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Search and Filter Section -->
+<section class="section-padding" style="padding-top: 0;">
+    <div class="container">
+        <div class="search-filter-section">
+            <form method="GET" action="{% url 'businesses:list' %}">
+                <!-- Main Search Row -->
+                <div class="row g-3 mb-4">
+                    <div class="col-md-5">
+                        <div class="position-relative">
+                            <i class="fas fa-search position-absolute" style="left: 1.25rem; top: 50%; transform: translateY(-50%); color: #94a3b8; z-index: 2;"></i>
+                            <input type="text" 
+                                   name="search" 
+                                   class="form-control form-control-modern ps-5" 
+                                   placeholder="Search businesses, services..." 
+                                   value="{{ current_search }}"
+                                   style="padding-left: 3rem;">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="position-relative">
+                            <i class="fas fa-map-marker-alt position-absolute" style="left: 1.25rem; top: 50%; transform: translateY(-50%); color: #94a3b8; z-index: 2;"></i>
+                            <input type="text" 
+                                   name="location" 
+                                   class="form-control form-control-modern ps-5" 
+                                   placeholder="Enter location" 
+                                   value="{{ current_location }}"
+                                   style="padding-left: 3rem;">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <button type="submit" class="btn btn-search w-100">
+                            <i class="fas fa-search me-2"></i>Search
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Advanced Filters -->
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <select name="category" class="form-control form-control-modern">
+                            <option value="">All Categories</option>
+                            {% for category in categories %}
+                            <option value="{{ category.slug }}" {% if request.GET.category == category.slug %}selected{% endif %}>
+                                {{ category.name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <select name="sort" class="form-control form-control-modern">
+                            <option value="-created_at" {% if current_sort == '-created_at' %}selected{% endif %}>Newest First</option>
+                            <option value="name" {% if current_sort == 'name' %}selected{% endif %}>Name (A-Z)</option>
+                            <option value="rating" {% if current_sort == 'rating' %}selected{% endif %}>Highest Rated</option>
+                            <option value="reviews" {% if current_sort == 'reviews' %}selected{% endif %}>Most Reviews</option>
+                        </select>
+                    </div>
+                </div>
+            </form>
+            
+            <!-- Active Filters Display -->
+            {% if current_search or current_location or request.GET.category or current_sort != '-created_at' %}
+            <div class="active-filters mt-4">
+                <h6 class="mb-3 text-muted">Active Filters:</h6>
+                <div class="d-flex flex-wrap gap-2">
+                    {% if current_search %}
+                    <span class="filter-tag">
+                        Search: "{{ current_search }}"
+                        <a href="?{% if current_location %}location={{ current_location|urlencode }}&{% endif %}{% if request.GET.category %}category={{ request.GET.category }}&{% endif %}{% if current_sort and current_sort != '-created_at' %}sort={{ current_sort }}{% endif %}" class="remove-filter">
+                            <i class="fas fa-times"></i>
+                        </a>
+                    </span>
+                    {% endif %}
+                    {% if current_location %}
+                    <span class="filter-tag">
+                        Location: "{{ current_location }}"
+                        <a href="?{% if current_search %}search={{ current_search|urlencode }}&{% endif %}{% if request.GET.category %}category={{ request.GET.category }}&{% endif %}{% if current_sort and current_sort != '-created_at' %}sort={{ current_sort }}{% endif %}" class="remove-filter">
+                            <i class="fas fa-times"></i>
+                        </a>
+                    </span>
+                    {% endif %}
+                    {% if request.GET.category %}
+                    <span class="filter-tag">
+                        Category: {{ request.GET.category|title }}
+                        <a href="?{% if current_search %}search={{ current_search|urlencode }}&{% endif %}{% if current_location %}location={{ current_location|urlencode }}&{% endif %}{% if current_sort and current_sort != '-created_at' %}sort={{ current_sort }}{% endif %}" class="remove-filter">
+                            <i class="fas fa-times"></i>
+                        </a>
+                    </span>
+                    {% endif %}
+                    <a href="{% url 'businesses:list' %}" class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-times me-1"></i>Clear All
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        
+        <!-- Results Header -->
+        {% if businesses %}
+        <div class="results-header">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h4 class="results-count">
+                        {% if page_obj.paginator.count == 1 %}
+                            Found 1 business
+                        {% else %}
+                            Found {{ page_obj.paginator.count }} businesses
+                        {% endif %}
+                    </h4>
+                    <p class="results-info">
+                        Showing 
+                        {% if page_obj.start_index %}{{ page_obj.start_index }}{% else %}1{% endif %} 
+                        - 
+                        {% if page_obj.end_index %}{{ page_obj.end_index }}{% else %}{{ businesses|length }}{% endif %} 
+                        of {{ page_obj.paginator.count|default:businesses|length }}
+                        {% if current_search %} for "{{ current_search }}"{% endif %}
+                        {% if current_location %} near "{{ current_location }}"{% endif %}
+                    </p>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <small class="text-muted">
+                        <i class="fas fa-clock me-1"></i>
+                        Updated {{ "now"|date:"M d, Y" }}
+                    </small>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Business List -->
+        <div class="row g-4">
+            {% for business in businesses %}
+            <div class="col-lg-4 col-md-6">
+                <div class="business-card-modern">
+                    <div class="business-image-modern">
+                        {% if business.featured_image %}
+                            <img src="{{ business.featured_image.url }}" 
+                                 alt="{{ business.name }}" 
+                                 loading="lazy">
+                        {% elif business.logo %}
+                            <img src="{{ business.logo.url }}" 
+                                 alt="{{ business.name }}" 
+                                 loading="lazy">
+                        {% else %}
+                            <div class="business-image-placeholder">
+                                <i class="fas fa-building"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="business-content-modern">
+                        <div class="business-header">
+                            <h5 class="business-title-modern">{{ business.name }}</h5>
+                            {% if business.is_verified %}
+                                <span class="verified-badge">
+                                    <i class="fas fa-check"></i>
+                                    Verified
+                                </span>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="business-location-modern">
+                            <i class="fas fa-map-marker-alt"></i>
+                            {{ business.city|default:"Local Business" }}{% if business.state %}, {{ business.state }}{% endif %}
+                        </div>
+                        
+                        <div class="business-rating-modern">
+                            <div class="stars-modern">
+                                {% for i in "12345"|make_list %}
+                                    {% if forloop.counter <= business.average_rating|floatformat:0|default:5 %}
+                                        <i class="fas fa-star"></i>
+                                    {% else %}
+                                        <i class="far fa-star"></i>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            <span class="rating-text-modern">
+                                {{ business.average_rating|floatformat:1|default:"5.0" }} 
+                                ({{ business.total_reviews|default:"0" }} review{{ business.total_reviews|pluralize }})
+                            </span>
+                        </div>
+                        
+                        <p class="business-description-modern">
+                            {{ business.description|truncatewords:15|default:"Professional local business providing quality services to the community." }}
+                        </p>
+                        
+                        <div class="business-footer">
+                            <a href="{% url 'businesses:detail' business.slug %}" 
+                               class="btn-view-details">
+                                <i class="fas fa-eye me-2"></i>View Details
+                            </a>
+                            <span class="category-badge">
+                                {{ business.category.name|default:"Business" }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <!-- Empty State -->
+            <div class="col-12">
+                <div class="empty-state">
+                    <div class="empty-state-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <h3>No businesses found</h3>
+                    <p>
+                        {% if current_search or current_location or request.GET.category %}
+                            We couldn't find any businesses matching your criteria. 
+                            Try adjusting your search terms or location.
+                        {% else %}
+                            There are no businesses listed yet. Be the first to add your business!
+                        {% endif %}
+                    </p>
+                    <div class="d-flex justify-content-center gap-3 flex-wrap">
+                        {% if current_search or current_location or request.GET.category %}
+                            <a href="{% url 'businesses:list' %}" class="btn btn-outline-primary">
+                                <i class="fas fa-times me-2"></i>Clear Filters
+                            </a>
+                        {% endif %}
+                        <a href="{% url 'businesses:create' %}" class="btn btn-primary">
+                            <i class="fas fa-plus me-2"></i>Add Your Business
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Enhanced Pagination -->
+        {% if is_paginated %}
+        <nav aria-label="Business listings pagination" class="mt-5">
+            <ul class="pagination pagination-modern">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" 
+                           href="?page={{ page_obj.previous_page_number }}{% if current_search %}&search={{ current_search|urlencode }}{% endif %}{% if current_location %}&location={{ current_location|urlencode }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if current_sort %}&sort={{ current_sort }}{% endif %}"
+                           aria-label="Previous page">
+                            <i class="fas fa-chevron-left"></i>
+                        </a>
+                    </li>
+                {% endif %}
+                
+                {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                        <li class="page-item active" aria-current="page">
+                            <span class="page-link">{{ num }}</span>
+                        </li>
+                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                        <li class="page-item">
+                            <a class="page-link" 
+                               href="?page={{ num }}{% if current_search %}&search={{ current_search|urlencode }}{% endif %}{% if current_location %}&location={{ current_location|urlencode }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if current_sort %}&sort={{ current_sort }}{% endif %}">
+                                {{ num }}
+                            </a>
+                        </li>
+                    {% elif num == page_obj.paginator.page_range.0 or num == page_obj.paginator.page_range|last %}
+                        <li class="page-item">
+                            <a class="page-link" 
+                               href="?page={{ num }}{% if current_search %}&search={{ current_search|urlencode }}{% endif %}{% if current_location %}&location={{ current_location|urlencode }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if current_sort %}&sort={{ current_sort }}{% endif %}">
+                                {{ num }}
+                            </a>
+                        </li>
+                        {% if num == page_obj.paginator.page_range.0 and page_obj.number > 4 %}
+                            <li class="page-item disabled">
+                                <span class="page-link">...</span>
+                            </li>
+                        {% elif num == page_obj.paginator.page_range|last and page_obj.number < page_obj.paginator.num_pages|add:'-3' %}
+                            <li class="page-item disabled">
+                                <span class="page-link">...</span>
+                            </li>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+                
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" 
+                           href="?page={{ page_obj.next_page_number }}{% if current_search %}&search={{ current_search|urlencode }}{% endif %}{% if current_location %}&location={{ current_location|urlencode }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if current_sort %}&sort={{ current_sort }}{% endif %}"
+                           aria-label="Next page">
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+            
+            <!-- Pagination Info -->
+            <div class="text-center mt-3">
+                <small class="text-muted">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                    {% if page_obj.paginator.count > 0 %}
+                        ({{ page_obj.paginator.count }} total business{{ page_obj.paginator.count|pluralize:"es" }})
+                    {% endif %}
+                </small>
+            </div>
+        </nav>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Enhanced search and filter functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.querySelector('input[name="search"]');
+        const locationInput = document.querySelector('input[name="location"]');
+        const categorySelect = document.querySelector('select[name="category"]');
+        const sortSelect = document.querySelector('select[name="sort"]');
+        const form = document.querySelector('form');
+        
+        // Auto-submit on filter change
+        if (categorySelect) {
+            categorySelect.addEventListener('change', function() {
+                form.submit();
+            });
+        }
+        
+        if (sortSelect) {
+            sortSelect.addEventListener('change', function() {
+                form.submit();
+            });
+        }
+        
+        // Enhanced focus effects
+        [searchInput, locationInput].forEach(input => {
+            if (input) {
+                input.addEventListener('focus', function() {
+                    this.parentElement.style.transform = 'translateY(-2px)';
+                    this.parentElement.style.boxShadow = '0 8px 25px rgba(99, 102, 241, 0.15)';
+                });
+                
+                input.addEventListener('blur', function() {
+                    this.parentElement.style.transform = 'translateY(0)';
+                    this.parentElement.style.boxShadow = '';
+                });
+            }
+        });
+        
+        // Animate business cards on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }, index * 100);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+        
+        // Observe business cards for animation
+        document.querySelectorAll('.business-card-modern').forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            card.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+            observer.observe(card);
+        });
+        
+        // Enhanced card hover effects
+        document.querySelectorAll('.business-card-modern').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.willChange = 'transform';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.willChange = 'auto';
+            });
+        });
+        
+        // Search suggestions (placeholder for future enhancement)
+        if (searchInput) {
+            let searchTimeout;
+            searchInput.addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                const query = this.value.trim();
+                
+                if (query.length > 2) {
+                    searchTimeout = setTimeout(() => {
+                        // Here you could implement search suggestions
+                        console.log('Search suggestions for:', query);
+                    }, 300);
+                }
+            });
+        }
+        
+        // Keyboard navigation for business cards
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'f') {
+                e.preventDefault();
+                if (searchInput) {
+                    searchInput.focus();
+                }
+            }
+        });
+        
+        // Loading state for search button
+        const searchButton = document.querySelector('.btn-search');
+        if (searchButton) {
+            form.addEventListener('submit', function() {
+                searchButton.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Searching...';
+                searchButton.disabled = true;
+                
+                // Re-enable after 3 seconds (fallback)
+                setTimeout(() => {
+                    searchButton.innerHTML = '<i class="fas fa-search me-2"></i>Search';
+                    searchButton.disabled = false;
+                }, 3000);
+            });
+        }
+    });
+    
+    // Utility function for smooth scrolling to top after pagination
+    function scrollToTop() {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    }
+    
+    // Add click listeners to pagination links
+    document.querySelectorAll('.pagination .page-link').forEach(link => {
+        link.addEventListener('click', function() {
+            setTimeout(scrollToTop, 100);
+        });
+    });
+</script>
+{% endblock %}

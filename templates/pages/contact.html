@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Contact Us - Business Directory{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="mb-4">Contact Us</h1>
+    <p class="mb-5">We’d love to hear from you! Please reach out using the form below or through our contact details.</p>
+
+    <div class="row">
+        <!-- Contact Form -->
+        <div class="col-md-7">
+            <form method="post" action="{% url 'contact' %}">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="name" class="form-label">Your Name</label>
+                    <input type="text" class="form-control" id="name" name="name" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="email" class="form-label">Your Email</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="subject" class="form-label">Subject</label>
+                    <input type="text" class="form-control" id="subject" name="subject">
+                </div>
+
+                <div class="mb-3">
+                    <label for="message" class="form-label">Your Message</label>
+                    <textarea class="form-control" id="message" name="message" rows="5" required></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary px-4">Send Message</button>
+            </form>
+        </div>
+
+        <!-- Contact Details -->
+        <div class="col-md-5">
+            <h3 class="mb-3">Our Contact Info</h3>
+            <ul class="list-unstyled">
+                <li><strong>Address:</strong> CHICAGO, USA</li>
+                <li><strong>Email:</strong> support@businessdirectory.cloud</li>
+                <li><strong>Phone:</strong> +254 737043775</li>
+            </ul>
+
+            <h3 class="mt-4 mb-3">Follow Us</h3>
+            <a href="#" class="me-3">Facebook</a>
+            <a href="#" class="me-3">Twitter</a>
+            <a href="#">LinkedIn</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

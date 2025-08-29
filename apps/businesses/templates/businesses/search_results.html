@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Search Results</h1>
+<form method="get">
+    {{ filter.form.as_p }}
+    <button type="submit">Search</button>
+</form>
+<ul>
+    {% for business in filter.qs %}
+        <li><a href="{% url 'businesses:detail' business.pk %}">{{ business.name }}</a> - {{ business.address }}</li>
+    {% empty %}
+        <li>No businesses found.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

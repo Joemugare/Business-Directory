@@ -1,0 +1,749 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}
+    {% if form.instance.pk %}
+        Edit {{ form.instance.name }} - LocalBiz
+    {% else %}
+        Add Your Business - LocalBiz
+    {% endif %}
+{% endblock %}
+
+{% block meta_description %}
+    {% if form.instance.pk %}
+        Edit your business listing on LocalBiz. Update information, photos, and details.
+    {% else %}
+        List your business on LocalBiz. Reach more customers in your local community.
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="container section-padding">
+    <!-- Hero Section -->
+    <div class="text-center mb-5">
+        <h1 class="text-gradient mb-4">
+            {% if form.instance.pk %}
+                <i class="fas fa-edit me-3"></i>
+                Edit Your Business
+            {% else %}
+                <i class="fas fa-plus-circle me-3"></i>
+                List Your Business
+            {% endif %}
+        </h1>
+        <p class="lead text-muted mb-0 mx-auto" style="max-width: 600px;">
+            {% if form.instance.pk %}
+                Update your business information to keep your customers informed with the latest details.
+            {% else %}
+                Join thousands of local businesses and connect with customers in your community.
+            {% endif %}
+        </p>
+    </div>
+
+    <!-- Progress Indicator -->
+    <div class="row justify-content-center mb-5">
+        <div class="col-md-8">
+            <div class="card glass">
+                <div class="card-body">
+                    <div class="progress-steps d-flex justify-content-between align-items-center">
+                        <div class="step active" data-step="1">
+                            <div class="step-icon">
+                                <i class="fas fa-info-circle"></i>
+                            </div>
+                            <span class="step-label">Basic Info</span>
+                        </div>
+                        <div class="step-line"></div>
+                        <div class="step" data-step="2">
+                            <div class="step-icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <span class="step-label">Location</span>
+                        </div>
+                        <div class="step-line"></div>
+                        <div class="step" data-step="3">
+                            <div class="step-icon">
+                                <i class="fas fa-images"></i>
+                            </div>
+                            <span class="step-label">Media</span>
+                        </div>
+                        <div class="step-line"></div>
+                        <div class="step" data-step="4">
+                            <div class="step-icon">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <span class="step-label">Review</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Form -->
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <form method="post" enctype="multipart/form-data" id="businessForm" novalidate>
+                {% csrf_token %}
+                
+                <!-- Step 1: Basic Information -->
+                <div class="form-step active" id="step1">
+                    <div class="card mb-4">
+                        <div class="card-header bg-transparent border-0">
+                            <h4 class="mb-0">
+                                <i class="fas fa-info-circle text-primary me-2"></i>
+                                Basic Information
+                            </h4>
+                            <p class="text-muted mb-0">Tell us about your business</p>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12 mb-3">
+                                    <label for="{{ form.name.id_for_label }}" class="form-label required">
+                                        Business Name
+                                    </label>
+                                    {{ form.name|add_class:"form-control"|attr:"placeholder:Enter your business name" }}
+                                    {% if form.name.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in form.name.errors %}{{ error }}{% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="{{ form.category.id_for_label }}" class="form-label required">
+                                        Category
+                                    </label>
+                                    {{ form.category|add_class:"form-select" }}
+                                    {% if form.category.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in form.category.errors %}{{ error }}{% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="{{ form.phone.id_for_label }}" class="form-label">
+                                        Phone Number
+                                    </label>
+                                    {{ form.phone|add_class:"form-control"|attr:"placeholder:(555) 123-4567" }}
+                                    {% if form.phone.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in form.phone.errors %}{{ error }}{% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="{{ form.email.id_for_label }}" class="form-label">
+                                        Email Address
+                                    </label>
+                                    {{ form.email|add_class:"form-control"|attr:"placeholder:contact@yourbusiness.com" }}
+                                    {% if form.email.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in form.email.errors %}{{ error }}{% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="{{ form.website.id_for_label }}" class="form-label">
+                                        Website
+                                    </label>
+                                    {{ form.website|add_class:"form-control"|attr:"placeholder:https://www.yourbusiness.com" }}
+                                    {% if form.website.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in form.website.errors %}{{ error }}{% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="col-12 mb-3">
+                                    <label for="{{ form.description.id_for_label }}" class="form-label required">
+                                        Business Description
+                                    </label>
+                                    {{ form.description|add_class:"form-control"|attr:"placeholder:Describe your business, services, and what makes you special..."|attr:"rows:4" }}
+                                    <div class="form-text">
+                                        <span id="charCount">0</span> / 500 characters
+                                    </div>
+                                    {% if form.description.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in form.description.errors %}{{ error }}{% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2: Location -->
+                <div class="form-step" id="step2">
+                    <div class="card mb-4">
+                        <div class="card-header bg-transparent border-0">
+                            <h4 class="mb-0">
+                                <i class="fas fa-map-marker-alt text-primary me-2"></i>
+                                Location Details
+                            </h4>
+                            <p class="text-muted mb-0">Help customers find you</p>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-12 mb-3">
+                                    <label for="{{ form.address.id_for_label }}" class="form-label required">
+                                        Street Address
+                                    </label>
+                                    {{ form.address|add_class:"form-control"|attr:"placeholder:123 Main Street" }}
+                                    {% if form.address.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in form.address.errors %}{{ error %}{% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="{{ form.city.id_for_label }}" class="form-label required">
+                                        City
+                                    </label>
+                                    {{ form.city|add_class:"form-control"|attr:"placeholder:Chicago" }}
+                                    {% if form.city.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in form.city.errors %}{{ error }}{% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="col-md-3 mb-3">
+                                    <label for="{{ form.state.id_for_label }}" class="form-label required">
+                                        State
+                                    </label>
+                                    {{ form.state|add_class:"form-control"|attr:"placeholder:IL" }}
+                                    {% if form.state.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in form.state.errors %}{{ error }}{% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="col-md-3 mb-3">
+                                    <label for="{{ form.zip_code.id_for_label }}" class="form-label required">
+                                        ZIP Code
+                                    </label>
+                                    {{ form.zip_code|add_class:"form-control"|attr:"placeholder:60601" }}
+                                    {% if form.zip_code.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in form.zip_code.errors %}{{ error }}{% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="col-12 mb-3">
+                                    <label class="form-label">Business Hours</label>
+                                    <div class="hours-grid">
+                                        <!-- Business hours would be handled by a separate formset or custom widget -->
+                                        <div class="alert alert-info">
+                                            <i class="fas fa-info-circle me-2"></i>
+                                            Business hours can be set after creating your listing.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3: Media -->
+                <div class="form-step" id="step3">
+                    <div class="card mb-4">
+                        <div class="card-header bg-transparent border-0">
+                            <h4 class="mb-0">
+                                <i class="fas fa-images text-primary me-2"></i>
+                                Photos & Media
+                            </h4>
+                            <p class="text-muted mb-0">Showcase your business with photos</p>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-12 mb-4">
+                                    <label for="{{ form.logo.id_for_label }}" class="form-label">
+                                        Business Logo
+                                    </label>
+                                    <div class="upload-area" id="logoUpload">
+                                        <div class="upload-content">
+                                            <i class="fas fa-cloud-upload-alt mb-3"></i>
+                                            <h5>Upload Your Logo</h5>
+                                            <p class="text-muted">Drag & drop or click to browse</p>
+                                            <small class="text-muted">Recommended: Square image, max 2MB</small>
+                                        </div>
+                                        {{ form.logo|add_class:"form-control d-none" }}
+                                    </div>
+                                    {% if form.logo.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in form.logo.errors %}{{ error }}{% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="col-12 mb-3">
+                                    <label for="{{ form.images.id_for_label }}" class="form-label">
+                                        Business Photos
+                                    </label>
+                                    <div class="upload-area" id="imagesUpload">
+                                        <div class="upload-content">
+                                            <i class="fas fa-images mb-3"></i>
+                                            <h5>Upload Business Photos</h5>
+                                            <p class="text-muted">Show off your business, products, or services</p>
+                                            <small class="text-muted">Multiple files accepted, max 5MB each</small>
+                                        </div>
+                                        {{ form.images|add_class:"form-control d-none" }}
+                                    </div>
+                                    {% if form.images.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in form.images.errors %}{{ error }}{% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 4: Review -->
+                <div class="form-step" id="step4">
+                    <div class="card mb-4">
+                        <div class="card-header bg-transparent border-0">
+                            <h4 class="mb-0">
+                                <i class="fas fa-check text-primary me-2"></i>
+                                Review & Submit
+                            </h4>
+                            <p class="text-muted mb-0">Review your information before submitting</p>
+                        </div>
+                        <div class="card-body">
+                            <div id="reviewContent">
+                                <!-- Review content will be populated by JavaScript -->
+                            </div>
+                            
+                            <div class="form-check mb-4">
+                                <input class="form-check-input" type="checkbox" id="agreeTerms" required>
+                                <label class="form-check-label" for="agreeTerms">
+                                    I agree to the <a href="/terms/" target="_blank">Terms of Service</a> 
+                                    and <a href="/privacy/" target="_blank">Privacy Policy</a>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation Buttons -->
+                <div class="d-flex justify-content-between mt-4">
+                    <button type="button" class="btn btn-outline-secondary" id="prevBtn" onclick="changeStep(-1)" style="display: none;">
+                        <i class="fas fa-arrow-left me-2"></i>
+                        Previous
+                    </button>
+                    <div class="ms-auto">
+                        <button type="button" class="btn btn-primary" id="nextBtn" onclick="changeStep(1)">
+                            Next
+                            <i class="fas fa-arrow-right ms-2"></i>
+                        </button>
+                        <button type="submit" class="btn btn-success" id="submitBtn" style="display: none;">
+                            <i class="fas fa-check me-2"></i>
+                            {% if form.instance.pk %}Update Business{% else %}Submit for Review{% endif %}
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Form Styles */
+.required::after {
+    content: ' *';
+    color: var(--danger-color);
+}
+
+.form-step {
+    display: none;
+}
+
+.form-step.active {
+    display: block;
+    animation: fadeInUp 0.5s ease;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Progress Steps */
+.progress-steps {
+    position: relative;
+    padding: 1rem 0;
+}
+
+.step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+}
+
+.step-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: var(--gray-200);
+    color: var(--gray-500);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    transition: all 0.3s ease;
+    margin-bottom: 0.5rem;
+}
+
+.step.active .step-icon {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+    color: white;
+    transform: scale(1.1);
+}
+
+.step.completed .step-icon {
+    background: var(--success-color);
+    color: white;
+}
+
+.step-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--gray-600);
+    transition: color 0.3s ease;
+}
+
+.step.active .step-label {
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.step-line {
+    flex: 1;
+    height: 2px;
+    background: var(--gray-200);
+    margin: 0 1rem;
+    position: relative;
+    top: -25px;
+}
+
+.step.active ~ .step-line,
+.step.completed ~ .step-line {
+    background: var(--primary-color);
+}
+
+/* Upload Areas */
+.upload-area {
+    border: 2px dashed var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 3rem 2rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    background: var(--bg-secondary);
+}
+
+.upload-area:hover {
+    border-color: var(--primary-color);
+    background: rgba(99, 102, 241, 0.05);
+    transform: translateY(-2px);
+}
+
+.upload-area.dragover {
+    border-color: var(--primary-color);
+    background: rgba(99, 102, 241, 0.1);
+    transform: scale(1.02);
+}
+
+.upload-content i {
+    font-size: 3rem;
+    color: var(--gray-400);
+    margin-bottom: 1rem;
+}
+
+.upload-area:hover .upload-content i {
+    color: var(--primary-color);
+}
+
+/* Character Counter */
+#charCount {
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+/* Form Controls */
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25);
+}
+
+.invalid-feedback {
+    color: var(--danger-color);
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .step-label {
+        font-size: 0.75rem;
+    }
+    
+    .step-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+    }
+    
+    .step-line {
+        margin: 0 0.5rem;
+        top: -20px;
+    }
+    
+    .upload-area {
+        padding: 2rem 1rem;
+    }
+}
+</style>
+
+<script>
+let currentStep = 1;
+const totalSteps = 4;
+
+// Character counter for description
+document.addEventListener('DOMContentLoaded', function() {
+    const descField = document.querySelector('textarea[name="description"]');
+    const charCount = document.getElementById('charCount');
+    
+    if (descField && charCount) {
+        function updateCharCount() {
+            const count = descField.value.length;
+            charCount.textContent = count;
+            charCount.style.color = count > 450 ? 'var(--warning-color)' : 
+                                   count > 500 ? 'var(--danger-color)' : 
+                                   'var(--primary-color)';
+        }
+        
+        descField.addEventListener('input', updateCharCount);
+        updateCharCount(); // Initial count
+    }
+});
+
+// Step navigation
+function changeStep(direction) {
+    const currentStepEl = document.getElementById(`step${currentStep}`);
+    
+    if (direction === 1 && currentStep < totalSteps) {
+        // Validate current step before proceeding
+        if (validateStep(currentStep)) {
+            currentStep++;
+            showStep(currentStep);
+        }
+    } else if (direction === -1 && currentStep > 1) {
+        currentStep--;
+        showStep(currentStep);
+    }
+}
+
+function showStep(step) {
+    // Hide all steps
+    document.querySelectorAll('.form-step').forEach(el => {
+        el.classList.remove('active');
+    });
+    
+    // Show current step
+    document.getElementById(`step${step}`).classList.add('active');
+    
+    // Update progress
+    updateProgress(step);
+    
+    // Update buttons
+    updateButtons(step);
+    
+    // Update review content if on review step
+    if (step === 4) {
+        updateReviewContent();
+    }
+}
+
+function updateProgress(step) {
+    document.querySelectorAll('.step').forEach((el, index) => {
+        const stepNum = index + 1;
+        el.classList.remove('active', 'completed');
+        
+        if (stepNum === step) {
+            el.classList.add('active');
+        } else if (stepNum < step) {
+            el.classList.add('completed');
+        }
+    });
+}
+
+function updateButtons(step) {
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const submitBtn = document.getElementById('submitBtn');
+    
+    prevBtn.style.display = step > 1 ? 'block' : 'none';
+    nextBtn.style.display = step < totalSteps ? 'block' : 'none';
+    submitBtn.style.display = step === totalSteps ? 'block' : 'none';
+}
+
+function validateStep(step) {
+    const stepEl = document.getElementById(`step${step}`);
+    const requiredFields = stepEl.querySelectorAll('[required]');
+    let isValid = true;
+    
+    requiredFields.forEach(field => {
+        if (!field.value.trim()) {
+            field.classList.add('is-invalid');
+            isValid = false;
+        } else {
+            field.classList.remove('is-invalid');
+        }
+    });
+    
+    if (!isValid) {
+        // Show error message
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'alert alert-danger mt-3';
+        errorDiv.innerHTML = '<i class="fas fa-exclamation-triangle me-2"></i>Please fill in all required fields.';
+        
+        // Remove existing error messages
+        stepEl.querySelectorAll('.alert-danger').forEach(el => el.remove());
+        
+        stepEl.appendChild(errorDiv);
+        
+        // Scroll to first invalid field
+        const firstInvalid = stepEl.querySelector('.is-invalid');
+        if (firstInvalid) {
+            firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            firstInvalid.focus();
+        }
+    }
+    
+    return isValid;
+}
+
+function updateReviewContent() {
+    const reviewContent = document.getElementById('reviewContent');
+    const formData = new FormData(document.getElementById('businessForm'));
+    
+    let reviewHTML = '<div class="row">';
+    
+    // Basic Info
+    reviewHTML += `
+        <div class="col-md-6 mb-4">
+            <div class="card glass">
+                <div class="card-body">
+                    <h5><i class="fas fa-info-circle text-primary me-2"></i>Basic Information</h5>
+                    <p><strong>Name:</strong> ${formData.get('name') || 'Not provided'}</p>
+                    <p><strong>Category:</strong> ${getSelectText('category') || 'Not selected'}</p>
+                    <p><strong>Phone:</strong> ${formData.get('phone') || 'Not provided'}</p>
+                    <p><strong>Email:</strong> ${formData.get('email') || 'Not provided'}</p>
+                    <p><strong>Website:</strong> ${formData.get('website') || 'Not provided'}</p>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Location
+    reviewHTML += `
+        <div class="col-md-6 mb-4">
+            <div class="card glass">
+                <div class="card-body">
+                    <h5><i class="fas fa-map-marker-alt text-primary me-2"></i>Location</h5>
+                    <p><strong>Address:</strong> ${formData.get('address') || 'Not provided'}</p>
+                    <p><strong>City:</strong> ${formData.get('city') || 'Not provided'}</p>
+                    <p><strong>State:</strong> ${formData.get('state') || 'Not provided'}</p>
+                    <p><strong>ZIP:</strong> ${formData.get('zip_code') || 'Not provided'}</p>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Description
+    reviewHTML += `
+        <div class="col-12 mb-4">
+            <div class="card glass">
+                <div class="card-body">
+                    <h5><i class="fas fa-align-left text-primary me-2"></i>Description</h5>
+                    <p>${formData.get('description') || 'No description provided'}</p>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    reviewHTML += '</div>';
+    reviewContent.innerHTML = reviewHTML;
+}
+
+function getSelectText(name) {
+    const select = document.querySelector(`select[name="${name}"]`);
+    return select ? select.options[select.selectedIndex].text : '';
+}
+
+// File upload handling
+document.addEventListener('DOMContentLoaded', function() {
+    setupFileUpload('logoUpload', 'logo');
+    setupFileUpload('imagesUpload', 'images');
+});
+
+function setupFileUpload(containerId, inputName) {
+    const container = document.getElementById(containerId);
+    const input = container.querySelector(`input[name="${inputName}"]`);
+    
+    container.addEventListener('click', () => input.click());
+    
+    container.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        container.classList.add('dragover');
+    });
+    
+    container.addEventListener('dragleave', () => {
+        container.classList.remove('dragover');
+    });
+    
+    container.addEventListener('drop', (e) => {
+        e.preventDefault();
+        container.classList.remove('dragover');
+        input.files = e.dataTransfer.files;
+        updateUploadDisplay(container, input.files);
+    });
+    
+    input.addEventListener('change', (e) => {
+        updateUploadDisplay(container, e.target.files);
+    });
+}
+
+function updateUploadDisplay(container, files) {
+    const content = container.querySelector('.upload-content');
+    if (files.length > 0) {
+        content.innerHTML = `
+            <i class="fas fa-check-circle text-success mb-3"></i>
+            <h5 class="text-success">${files.length} file(s) selected</h5>
+            <p class="text-muted">Click to change files</p>
+        `;
+    }
+}
+
+// Initialize first step
+showStep(1);
+</script>
+{% endblock %}

@@ -1,0 +1,615 @@
+﻿{% extends "base.html" %}
+{% block title %}About Us - LocalBiz{% endblock %}
+{% block meta_description %}Learn more about LocalBiz, your trusted local business directory helping communities discover and connect with businesses.{% endblock %}
+{% block meta_keywords %}about, local business directory, community, LocalBiz{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Hero Section Styles */
+    .hero-about {
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .hero-about::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="%23ffffff" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+        opacity: 0.3;
+    }
+    
+    .hero-content {
+        position: relative;
+        z-index: 2;
+    }
+    
+    .floating-elements {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        z-index: 1;
+    }
+    
+    .floating-elements::before,
+    .floating-elements::after {
+        content: '';
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.1);
+        animation: float-slow 20s ease-in-out infinite;
+    }
+    
+    .floating-elements::before {
+        width: 300px;
+        height: 300px;
+        top: 20%;
+        left: -10%;
+        animation-delay: 0s;
+    }
+    
+    .floating-elements::after {
+        width: 200px;
+        height: 200px;
+        bottom: 10%;
+        right: -5%;
+        animation-delay: -10s;
+    }
+    
+    @keyframes float-slow {
+        0%, 100% { transform: translate(0, 0) rotate(0deg); }
+        33% { transform: translate(30px, -30px) rotate(120deg); }
+        66% { transform: translate(-20px, 20px) rotate(240deg); }
+    }
+    
+    /* Stats Section */
+    .stats-card {
+        background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+        border: 1px solid rgba(99, 102, 241, 0.1);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .stats-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #6366f1, #8b5cf6, #ec4899);
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.6s ease;
+    }
+    
+    .stats-card:hover::before {
+        transform: scaleX(1);
+    }
+    
+    .stats-number {
+        font-size: 3rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, #6366f1, #ec4899);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        line-height: 1;
+    }
+    
+    /* Values Section */
+    .values-card {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .values-card::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
+        transform: scale(0);
+        transition: transform 0.6s ease;
+    }
+    
+    .values-card:hover::before {
+        transform: scale(1);
+    }
+    
+    .values-card:hover {
+        transform: translateY(-12px) scale(1.03);
+        box-shadow: 0 25px 50px rgba(99, 102, 241, 0.15);
+    }
+    
+    .value-icon {
+        width: 80px;
+        height: 80px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        position: relative;
+        z-index: 2;
+        transition: all 0.4s ease;
+    }
+    
+    .value-icon.trust {
+        background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    }
+    
+    .value-icon.community {
+        background: linear-gradient(135deg, #10b981, #059669);
+    }
+    
+    .value-icon.innovation {
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+    }
+    
+    .values-card:hover .value-icon {
+        transform: scale(1.1) rotate(5deg);
+    }
+    
+    /* Team Section */
+    .team-card {
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(15px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: all 0.4s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .team-card::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #6366f1, #ec4899);
+        transform: scaleX(0);
+        transition: transform 0.3s ease;
+    }
+    
+    .team-card:hover::after {
+        transform: scaleX(1);
+    }
+    
+    .team-image {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        margin: 0 auto 1.5rem;
+        position: relative;
+        overflow: hidden;
+        border: 4px solid rgba(99, 102, 241, 0.2);
+        transition: all 0.4s ease;
+    }
+    
+    .team-card:hover .team-image {
+        border-color: #6366f1;
+        transform: scale(1.05);
+    }
+    
+    .team-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.4s ease;
+    }
+    
+    .team-card:hover .team-image img {
+        transform: scale(1.1);
+    }
+    
+    /* Mission Section */
+    .mission-section {
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        position: relative;
+    }
+    
+    .mission-content {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(20px);
+        border-radius: 2rem;
+        padding: 4rem;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    }
+    
+    .quote-icon {
+        font-size: 4rem;
+        color: #6366f1;
+        opacity: 0.3;
+        position: absolute;
+        top: -1rem;
+        left: -1rem;
+    }
+    
+    /* CTA Section */
+    .cta-section {
+        background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .cta-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="dots" width="10" height="10" patternUnits="userSpaceOnUse"><circle cx="5" cy="5" r="1" fill="%236366f1" opacity="0.3"/></pattern></defs><rect width="100" height="100" fill="url(%23dots)"/></svg>');
+    }
+    
+    .cta-content {
+        position: relative;
+        z-index: 2;
+    }
+    
+    /* Animations */
+    .fadeInUp {
+        opacity: 0;
+        transform: translateY(30px);
+        animation: fadeInUp 0.8s ease forwards;
+    }
+    
+    .fadeInUp.delay-1 { animation-delay: 0.2s; }
+    .fadeInUp.delay-2 { animation-delay: 0.4s; }
+    .fadeInUp.delay-3 { animation-delay: 0.6s; }
+    
+    @keyframes fadeInUp {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .stats-number {
+            font-size: 2.5rem;
+        }
+        
+        .mission-content {
+            padding: 2rem;
+        }
+        
+        .floating-elements::before,
+        .floating-elements::after {
+            display: none;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-about section-padding">
+    <div class="floating-elements"></div>
+    <div class="container hero-content">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <div class="fadeInUp">
+                    <h1 class="display-4 fw-bold text-white mb-4">
+                        Connecting Communities,
+                        <span class="text-warning">One Business</span> at a Time
+                    </h1>
+                    <p class="lead text-white opacity-90 mb-4">
+                        LocalBiz is more than just a directory – we're the bridge that connects people with the incredible businesses that make their neighborhoods special.
+                    </p>
+                    <div class="d-flex flex-wrap gap-3">
+                        <a href="{% url 'businesses:list' %}" class="btn btn-light btn-lg">
+                            <i class="fas fa-search me-2"></i>Explore Businesses
+                        </a>
+                        <a href="#mission" class="btn btn-outline-light btn-lg">
+                            <i class="fas fa-arrow-down me-2"></i>Learn More
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 text-center">
+                <div class="fadeInUp delay-1">
+                    <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" 
+                         alt="LocalBiz Team Collaboration" 
+                         class="img-fluid rounded-4 shadow-lg floating">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="py-5 bg-white">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-3 col-6">
+                <div class="stats-card card p-4 text-center h-100 border-0">
+                    <div class="stats-number">2.5K+</div>
+                    <h6 class="text-muted mb-0">Listed Businesses</h6>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="stats-card card p-4 text-center h-100 border-0">
+                    <div class="stats-number">15K+</div>
+                    <h6 class="text-muted mb-0">Happy Customers</h6>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="stats-card card p-4 text-center h-100 border-0">
+                    <div class="stats-number">50+</div>
+                    <h6 class="text-muted mb-0">Cities Covered</h6>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="stats-card card p-4 text-center h-100 border-0">
+                    <div class="stats-number">4.8★</div>
+                    <h6 class="text-muted mb-0">Average Rating</h6>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Mission Section -->
+<section id="mission" class="mission-section section-padding">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="mission-content text-center position-relative">
+                    <i class="fas fa-quote-left quote-icon"></i>
+                    <h2 class="text-gradient mb-4">Our Mission</h2>
+                    <p class="lead mb-4">
+                        We believe that every neighborhood has hidden gems waiting to be discovered. Our mission is to shine a spotlight on local businesses, helping them thrive while making it easier for people to find exactly what they need, right where they live.
+                    </p>
+                    <p class="mb-4">
+                        From the corner bakery that makes the perfect croissant to the tech repair shop that saves the day, we celebrate the entrepreneurs and innovators who make our communities vibrant and unique.
+                    </p>
+                    <div class="row g-4 mt-4">
+                        <div class="col-md-4">
+                            <h4 class="text-primary">❤️</h4>
+                            <h6>Built with Love</h6>
+                            <small class="text-muted">Every feature designed with care for both businesses and customers</small>
+                        </div>
+                        <div class="col-md-4">
+                            <h4 class="text-success">🌱</h4>
+                            <h6>Growing Together</h6>
+                            <small class="text-muted">Supporting local economies and sustainable business growth</small>
+                        </div>
+                        <div class="col-md-4">
+                            <h4 class="text-warning">✨</h4>
+                            <h6>Always Improving</h6>
+                            <small class="text-muted">Constantly evolving based on community feedback and needs</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Values Section -->
+<section class="section-padding bg-white">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col-lg-8 mx-auto">
+                <h2 class="text-gradient mb-3">Core Values That Drive Us</h2>
+                <p class="lead text-muted">The principles that guide every decision we make and every feature we build.</p>
+            </div>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="values-card card p-5 h-100 text-center border-0">
+                    <div class="value-icon trust">
+                        <i class="fas fa-handshake fa-2x text-white"></i>
+                    </div>
+                    <h5 class="mb-3">Trust & Transparency</h5>
+                    <p class="text-muted mb-4">We prioritize accurate, verified listings and honest reviews to help you make informed decisions with confidence.</p>
+                    <ul class="list-unstyled text-start">
+                        <li class="mb-2"><i class="fas fa-check-circle text-primary me-2"></i>Verified business information</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-primary me-2"></i>Authentic customer reviews</li>
+                        <li><i class="fas fa-check-circle text-primary me-2"></i>Transparent rating system</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="values-card card p-5 h-100 text-center border-0">
+                    <div class="value-icon community">
+                        <i class="fas fa-users fa-2x text-white"></i>
+                    </div>
+                    <h5 class="mb-3">Community First</h5>
+                    <p class="text-muted mb-4">We believe in the power of local communities and work tirelessly to strengthen the bonds between neighbors and businesses.</p>
+                    <ul class="list-unstyled text-start">
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Support local economies</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Foster business-customer relationships</li>
+                        <li><i class="fas fa-check-circle text-success me-2"></i>Celebrate local success stories</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="values-card card p-5 h-100 text-center border-0">
+                    <div class="value-icon innovation">
+                        <i class="fas fa-lightbulb fa-2x text-white"></i>
+                    </div>
+                    <h5 class="mb-3">Innovation & Excellence</h5>
+                    <p class="text-muted mb-4">We continuously evolve our platform with cutting-edge features to provide the best possible experience for everyone.</p>
+                    <ul class="list-unstyled text-start">
+                        <li class="mb-2"><i class="fas fa-check-circle text-warning me-2"></i>Modern, intuitive design</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-warning me-2"></i>Smart search algorithms</li>
+                        <li><i class="fas fa-check-circle text-warning me-2"></i>Mobile-first approach</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Team Section -->
+<section class="section-padding" style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col-lg-8 mx-auto">
+                <h2 class="text-gradient mb-3">Meet Our Team</h2>
+                <p class="lead text-muted">The passionate people behind LocalBiz who work every day to make local discovery better.</p>
+            </div>
+        </div>
+        <div class="row g-4 justify-content-center">
+            <div class="col-md-4">
+                <div class="team-card card p-4 text-center h-100 border-0">
+                    <div class="team-image">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" alt="John Smith">
+                    </div>
+                    <h5 class="mb-1">John Smith</h5>
+                    <p class="text-primary mb-2">Founder & CEO</p>
+                    <p class="text-muted small mb-3">Passionate about connecting communities and supporting local businesses through technology.</p>
+                    <div class="d-flex justify-content-center gap-2">
+                        <a href="#" class="btn btn-outline-primary btn-sm"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="btn btn-outline-primary btn-sm"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="team-card card p-4 text-center h-100 border-0">
+                    <div class="team-image">
+                        <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" alt="Sarah Johnson">
+                    </div>
+                    <h5 class="mb-1">Sarah Johnson</h5>
+                    <p class="text-success mb-2">Head of Community</p>
+                    <p class="text-muted small mb-3">Dedicated to building strong relationships with business owners and helping them succeed.</p>
+                    <div class="d-flex justify-content-center gap-2">
+                        <a href="#" class="btn btn-outline-success btn-sm"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="btn btn-outline-success btn-sm"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="team-card card p-4 text-center h-100 border-0">
+                    <div class="team-image">
+                        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" alt="Mike Chen">
+                    </div>
+                    <h5 class="mb-1">Mike Chen</h5>
+                    <p class="text-warning mb-2">Lead Developer</p>
+                    <p class="text-muted small mb-3">Crafting beautiful, user-friendly experiences that make finding local businesses effortless.</p>
+                    <div class="d-flex justify-content-center gap-2">
+                        <a href="#" class="btn btn-outline-warning btn-sm"><i class="fab fa-github"></i></a>
+                        <a href="#" class="btn btn-outline-warning btn-sm"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section section-padding text-white">
+    <div class="container cta-content">
+        <div class="row text-center">
+            <div class="col-lg-8 mx-auto">
+                <h2 class="mb-4">Ready to Discover Your Next Favorite Local Spot?</h2>
+                <p class="lead mb-5">Join thousands of people who trust LocalBiz to find the best businesses in their neighborhood.</p>
+                <div class="d-flex flex-wrap justify-content-center gap-3">
+                    <a href="{% url 'businesses:list' %}" class="btn btn-light btn-lg">
+                        <i class="fas fa-search me-2"></i>Start Exploring
+                    </a>
+                    <a href="{% url 'businesses:create' %}" class="btn btn-outline-light btn-lg">
+                        <i class="fas fa-plus-circle me-2"></i>List Your Business
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Intersection Observer for animations
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('fadeInUp');
+            }
+        });
+    }, observerOptions);
+    
+    // Observe all cards and sections
+    document.querySelectorAll('.card, .mission-content').forEach(el => {
+        observer.observe(el);
+    });
+    
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+    
+    // Animate numbers on scroll
+    const animateNumbers = () => {
+        const numbers = document.querySelectorAll('.stats-number');
+        numbers.forEach(number => {
+            const finalNumber = number.textContent;
+            const numericValue = parseInt(finalNumber.replace(/[^\d]/g, ''));
+            const suffix = finalNumber.replace(/[\d.,]/g, '');
+            
+            let current = 0;
+            const increment = numericValue / 50;
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= numericValue) {
+                    current = numericValue;
+                    clearInterval(timer);
+                }
+                
+                let displayValue = Math.floor(current);
+                if (displayValue >= 1000) {
+                    displayValue = (displayValue / 1000).toFixed(1) + 'K';
+                }
+                number.textContent = displayValue + suffix.replace('K', '');
+            }, 30);
+        });
+    };
+    
+    // Trigger number animation when stats section is visible
+    const statsObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                animateNumbers();
+                statsObserver.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.5 });
+    
+    const statsSection = document.querySelector('.stats-card');
+    if (statsSection) {
+        statsObserver.observe(statsSection.parentElement);
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Categories</h1>
+
+    {% if categories %}
+        <ul>
+        {% for cat in categories %}
+            <li>
+                <a href="{% url 'categories:detail' slug=cat.slug %}">
+                    {{ cat.name|default:"Unnamed Category" }}
+                </a>
+                <p>{{ cat.description|default:"No description available" }}</p>
+                {% if cat.parent %}
+                    <p>Parent: 
+                        <a href="{% url 'categories:detail' slug=cat.parent.slug %}">
+                            {{ cat.parent.name }}
+                        </a>
+                    </p>
+                {% endif %}
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No categories found.</p>
+    {% endif %}
+
+{% endblock %}

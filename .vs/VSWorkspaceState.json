@@ -1,0 +1,14 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\apps\\businesses\\templates",
+    "\\apps\\businesses\\templates\\businesses",
+    "\\apps\\categories\\templates",
+    "\\apps\\categories\\templates\\categories",
+    "\\business_directory",
+    "\\templates",
+    "\\templates\\pages"
+  ],
+  "SelectedNode": "\\business_directory\\settings.py",
+  "PreviewInSolutionExplorer": false
+}
